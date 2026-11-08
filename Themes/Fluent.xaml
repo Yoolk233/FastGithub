@@ -1,0 +1,38 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- 主按钮样式：Button Classes="accent" -->
+  <Style Selector="Button.accent">
+    <Setter Property="Foreground" Value="#FFFFFFFF" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+
+  <Style Selector="Button.accent /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#FF0F6CBD" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+
+  <Style Selector="Button.accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#FF115EA3" />
+  </Style>
+
+  <Style Selector="Button.accent:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#FF0C3B70" />
+  </Style>
+
+  <Style Selector="Button.accent:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#FFB7D3EA" />
+  </Style>
+
+  <!-- DataGrid 紧凑外观 -->
+  <Style Selector="DataGrid">
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="FontWeight" Value="DemiBold" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+</Styles>

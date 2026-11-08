@@ -1,0 +1,89 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FastGithub.MainWindow"
+        Title="FastGithub 1.2.0"
+        Width="1080" Height="780"
+        MinWidth="860" MinHeight="620"
+        Background="#FFF3F3F3"
+        FontFamily="Microsoft YaHei UI, Segoe UI"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid Margin="24,14,24,14" RowDefinitions="Auto,Auto,*,Auto,24">
+
+    <!-- 标题行 -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,14">
+      <StackPanel Spacing="4">
+        <TextBlock Text="FastGithub" FontSize="28" FontWeight="DemiBold" Foreground="#FF1A1A1A" />
+        <TextBlock Text="GitHub 网页直连 · 资源与 Release 下载加速" FontSize="13" Foreground="#FF616161" />
+      </StackPanel>
+      <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="2">
+        <TextBlock Name="ChipText" Text="● 未加速" FontSize="13" FontWeight="DemiBold"
+                   Foreground="#FF8A8A8A" HorizontalAlignment="Right" />
+        <TextBlock Text="v1.2.0 · hosts 直连" FontSize="12" Foreground="#FF8A8A8A" HorizontalAlignment="Right" />
+      </StackPanel>
+    </Grid>
+
+    <!-- 状态卡 -->
+    <Border Grid.Row="1" Background="White" CornerRadius="8" BorderBrush="#FFE3E3E3"
+            BorderThickness="1" Padding="22,18" Margin="0,0,0,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="8" VerticalAlignment="Center">
+          <TextBlock Name="StateText" Text="未加速" FontSize="21" FontWeight="DemiBold" Foreground="#FF616161" />
+          <TextBlock Name="DetailText" Text="点右侧「一键加速」，自动测速并写入优选节点"
+                     FontSize="13" Foreground="#FF616161" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <Button Name="StartBtn" Classes="accent" Content="一键加速"
+                  Width="140" Height="42" FontSize="15" FontWeight="DemiBold" />
+          <Button Name="StopBtn" Content="停止还原"
+                  Width="124" Height="42" FontSize="15" IsEnabled="False" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- 节点列表卡 -->
+    <Border Grid.Row="2" Background="White" CornerRadius="8" BorderBrush="#FFE3E3E3"
+            BorderThickness="1" Margin="0,0,0,12">
+      <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="22,14,22,6">
+          <TextBlock Text="节点状态" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" />
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+            <Button Name="RefreshBtn" Content="重新测速" Height="34" FontSize="13" />
+            <Button Name="LinkBtn" Content="下载加速" Height="34" FontSize="13" />
+          </StackPanel>
+        </Grid>
+        <DataGrid Grid.Row="1" Name="NodeGrid"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  GridLinesVisibility="None" HeadersVisibility="Column"
+                  Background="White" BorderThickness="0" RowHeight="38"
+                  Margin="10,0,10,10"
+                  CanUserResizeColumns="True" CanUserSortColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="域名" Binding="{Binding Host}" Width="2.1*" />
+            <DataGridTextColumn Header="优选 IP" Binding="{Binding Ip}" Width="1.3*" />
+            <DataGridTextColumn Header="延迟" Binding="{Binding MsText}" Width="90" />
+            <DataGridTextColumn Header="状态" Binding="{Binding StateText}" Width="1.1*" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+    </Border>
+
+    <!-- 日志卡 -->
+    <Border Grid.Row="3" Background="White" CornerRadius="8" BorderBrush="#FFE3E3E3"
+            BorderThickness="1" Height="176">
+      <Grid RowDefinitions="Auto,*" Margin="22,14,22,10">
+        <TextBlock Text="运行日志" FontSize="16" FontWeight="DemiBold" Margin="0,0,0,8" />
+        <TextBox Grid.Row="1" Name="LogBox"
+                 IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap"
+                 Background="White" BorderThickness="0"
+                 FontFamily="Consolas, Microsoft YaHei UI" FontSize="12"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+      </Grid>
+    </Border>
+
+    <TextBlock Grid.Row="4" Name="StatusText" Text="就绪"
+               FontSize="12" Foreground="#FF616161"
+               VerticalAlignment="Bottom" Margin="4,0,0,0" />
+  </Grid>
+</Window>

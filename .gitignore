@@ -1,0 +1,31 @@
+# 构建产物
+bin/
+obj/
+publish/
+dist/
+
+# 单文件发布产物
+*.exe
+*.pdb
+*.dll
+
+# 运行时数据（本机私有，绝不入库）
+nodes.txt
+mirror.txt
+*.bak
+hosts*
+
+# 压缩包
+*.zip
+*.7z
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# 系统
+Thumbs.db
+desktop.ini

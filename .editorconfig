@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{md,yml,json}]
+end_of_line = lf
+indent_size = 2
+
+[*.cs]
+indent_size = 4
+# 保持现有风格：字段名小驼峰，类型名大驼峰

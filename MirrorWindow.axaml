@@ -1,0 +1,95 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FastGithub.MirrorWindow"
+        Title="下载加速 · 网址转换"
+        Width="740" Height="560"
+        MinWidth="640" MinHeight="500"
+        Background="#FFF3F3F3"
+        FontFamily="Microsoft YaHei UI, Segoe UI"
+        WindowStartupLocation="CenterOwner">
+
+  <Grid Margin="24,18,24,18" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto">
+
+    <TextBlock Grid.Row="0" Text="下载加速" FontSize="22" FontWeight="DemiBold" Margin="0,0,0,4" />
+
+    <TextBlock Grid.Row="1"
+               Text="把 Release、raw、archive 链接套上镜像前缀即可加速下载。镜像源可切换，也可以直接填自定义前缀。"
+               Foreground="#FF616161" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,16" />
+
+    <!-- 镜像源卡 -->
+    <Border Grid.Row="2" Background="White" CornerRadius="8" BorderBrush="#FFE3E3E3"
+            BorderThickness="1" Padding="18,14" Margin="0,0,0,12">
+      <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="镜像源" VerticalAlignment="Center"
+                   FontSize="13" Margin="0,0,16,0" />
+
+        <TextBox Grid.Row="0" Grid.Column="1" Name="PrefixBox"
+                 Height="34" FontSize="13" HorizontalAlignment="Stretch"
+                 Text="https://ghfast.top/" />
+
+        <ComboBox Grid.Row="1" Grid.Column="1" Name="PresetBox"
+                  Height="32" FontSize="12" Margin="0,8,0,0"
+                  PlaceholderText="从预设里选一个…" HorizontalAlignment="Stretch" />
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
+          <Button Name="TestBtn" Content="测速" Height="32" FontSize="13" />
+          <Button Name="DefaultBtn" Content="设为默认" Height="32" FontSize="13" />
+          <TextBlock Name="TestText" Text="" VerticalAlignment="Center"
+                     FontSize="12" Foreground="#FF616161" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="3" Grid.Column="1" Name="TipText"
+                   Text="当前默认：https://ghfast.top/"
+                   FontSize="12" Foreground="#FF8A8A8A" Margin="0,8,0,0" />
+      </Grid>
+    </Border>
+
+    <!-- 链接转换卡 -->
+    <Border Grid.Row="3" Background="White" CornerRadius="8" BorderBrush="#FFE3E3E3"
+            BorderThickness="1" Padding="18,14" Margin="0,0,0,12">
+      <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="原始链接" VerticalAlignment="Center"
+                   FontSize="13" Margin="0,0,16,0" />
+
+        <TextBox Grid.Row="0" Grid.Column="1" Name="UrlBox"
+                 Height="34" FontSize="13"
+                 Watermark="https://github.com/…"
+                 Text="https://github.com/torvalds/linux/archive/refs/heads/master.zip" />
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                    Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+          <Button Name="ConvertBtn" Classes="accent" Content="转换" Width="100" Height="34" FontSize="13" />
+          <Button Name="RestoreBtn" Content="还原" Width="100" Height="34" FontSize="13" />
+          <Button Name="CopyBtn" Content="复制" Width="100" Height="34" FontSize="13" />
+          <Button Name="ClearBtn" Content="清空" Width="100" Height="34" FontSize="13" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="转换后的链接" FontSize="13" Margin="0,14,0,6" />
+      </Grid>
+    </Border>
+
+    <!-- 结果框 -->
+    <Border Grid.Row="4" Background="White" CornerRadius="8" BorderBrush="#FFE3E3E3"
+            BorderThickness="1" Padding="14,10" Margin="0,0,0,12">
+      <TextBox Name="ResultBox"
+               IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+               Background="White" BorderThickness="0"
+               FontFamily="Consolas, Microsoft YaHei UI" FontSize="13"
+               ScrollViewer.VerticalScrollBarVisibility="Auto" />
+    </Border>
+
+    <!-- 提示条 -->
+    <Border Grid.Row="5" Background="#FFFFF8E5" BorderBrush="#FFF0E0B0"
+            CornerRadius="8" BorderThickness="1" Padding="14,10" Margin="0,0,0,12">
+      <TextBlock FontSize="12" Foreground="#FF6B5A22" TextWrapping="Wrap"
+                 Text="提示：网页浏览不需要转换，加速开关生效后浏览器直连 github.com 即可。镜像只用于下载链接，部分镜像可能临时失效，点「测速」能看出哪个当前可用。" />
+    </Border>
+
+    <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button Name="CloseBtn" Content="关闭" Width="96" Height="34" FontSize="13" />
+    </StackPanel>
+  </Grid>
+</Window>
