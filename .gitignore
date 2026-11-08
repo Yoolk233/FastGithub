@@ -13,7 +13,7 @@ dist/
 nodes.txt
 mirror.txt
 *.bak
-hosts*
+# 注意：不要写 hosts* —— 会连 Core/Hosts.cs 一起忽略掉；本机备份 hosts.fastgithub.bak 已由 *.bak 覆盖
 
 # 压缩包
 *.zip
