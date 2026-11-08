@@ -128,7 +128,7 @@ git commit -m "feat: 初始提交，FastGithub 1.2.0"
 
 1. https://github.com/settings/tokens → **Generate new token (classic)**
 2. Note：`fastgithub-push`；Expiration：90 days
-3. 勾 **`repo`**（整个大类）
+3. 勾 **`repo`**（整个大类）**和 `workflow`**（这个必须有——仓库里带 `.github/workflows/build.yml`，没有 `workflow` 权限会被 GitHub 拒收 `refusing to allow a Personal Access Token to create or update workflow`）
 4. 生成后立刻复制 `ghp_xxxxxxxx`
 
 ### 7.2 推送
@@ -148,6 +148,8 @@ git push -u origin main
 | 报错 | 原因 | 处理 |
 | --- | --- | --- |
 | `Support for password authentication was removed` | 用了账号密码 | 改粘贴 token |
+| `refusing to allow a Personal Access Token to create or update workflow` | token 没勾 `workflow` | 重新生成 token，把 `repo` + `workflow` 两个都勾上 |
+| `SSL peer certificate ... was not OK` | git 自带 CA 包不认这条链（网络里有中间设备） | `git config --global http.sslBackend schannel`（改用 Windows 证书库；本机实测 curl 能通、git 默认 OpenSSL 不通） |
 | `Permission to xxx denied to yyy` | token 没勾 `repo` / 登错账号 | 重新生成；清凭据：控制面板 → 凭据管理器 → 删 `git:https://github.com` |
 | `failed to push some refs (fetch first)` | 建仓时勾了 README | `git pull --rebase origin main` 再 push |
 | `Failed to connect ... port 443` | 网络 | `git config --global https.proxy http://127.0.0.1:端口`（有本地代理时） |
