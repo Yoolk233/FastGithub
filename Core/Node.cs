@@ -26,7 +26,7 @@ public class Node
     /// </summary>
     public bool Acceptable => Config.IsStrict(Host) ? Healthy : Usable;
 
-    public string MsText => Ms <= 0 ? "-" : Ms + " ms";
+    public string MsText => Ms <= 0 ? "—" : Ms + " ms";
 
     public string StateText => State switch
     {
@@ -34,6 +34,7 @@ public class Node
         "WEAK" => "受限 · " + Ms + " ms",
         "BAD" => "不可用 · " + Code,
         "FAIL" => "失败",
+        "HOSTS" => "hosts 已接管",
         _ => "待测速"
     };
 

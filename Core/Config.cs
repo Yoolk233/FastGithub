@@ -1,11 +1,11 @@
-namespace FastGithub;
+﻿namespace FastGithub;
 
 public static class Config
 {
     public const string AppName = "FastGithub";
 
     /// <summary>显示用版本号</summary>
-    public const string Version = "1.2.1_Fix";
+    public const string Version = "1.2.1Fix2";
 
     /// <summary>hosts 加速块的起始标记</summary>
     public const string MarkBegin = "# ==== FastGithub BEGIN (auto generated) ====";

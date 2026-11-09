@@ -1,7 +1,7 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="FastGithub.MainWindow"
-        Title="FastGithub 1.2.1_Fix"
+        Title="FastGithub 1.2.1Fix2"
         Width="1156" Height="780"
         MinWidth="936" MinHeight="620"
         Background="#FFF3F3F3"
@@ -29,7 +29,7 @@
             </StackPanel>
           </Button>
         </StackPanel>
-        <TextBlock Grid.Row="2" Name="SideVersion" Text="1.2.1_Fix" FontSize="10"
+        <TextBlock Grid.Row="2" Name="SideVersion" Text="1.2.1Fix2" FontSize="10"
                    Foreground="#FF9A9A9A" HorizontalAlignment="Center" />
       </Grid>
     </Border>
@@ -49,7 +49,7 @@
           <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="2">
             <TextBlock Name="ChipText" Text="● 未加速" FontSize="13" FontWeight="DemiBold"
                        Foreground="#FF8A8A8A" HorizontalAlignment="Right" />
-            <TextBlock Text="v1.2.1_Fix · hosts 直连" FontSize="12" Foreground="#FF8A8A8A" HorizontalAlignment="Right" />
+            <TextBlock Text="v1.2.1Fix2 · hosts 直连" FontSize="12" Foreground="#FF8A8A8A" HorizontalAlignment="Right" />
           </StackPanel>
         </Grid>
 
@@ -124,7 +124,7 @@
           <Button Name="BackBtn" Content="‹  返回主界面" Height="32" FontSize="13" Padding="12,0" />
           <TextBlock Grid.Column="1" Text="设置" FontSize="22" FontWeight="DemiBold"
                      VerticalAlignment="Center" Margin="16,0,0,0" Foreground="#FF1A1A1A" />
-          <TextBlock Grid.Column="2" Name="SettingsVersion" Text="FastGithub 1.2.1_Fix" FontSize="12"
+          <TextBlock Grid.Column="2" Name="SettingsVersion" Text="FastGithub 1.2.1Fix2" FontSize="12"
                      Foreground="#FF8A8A8A" VerticalAlignment="Center" />
         </Grid>
 

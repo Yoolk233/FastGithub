@@ -115,9 +115,30 @@ public partial class MainWindow : Window
             }
         }
         RefreshState();
+        SyncNodesFromHosts();
         if (Engine.LoadCache().Count > 0 || Hosts.HasBlock(Hosts.Read()))
         {
             StartWatchdog();
+        }
+    }
+
+    /// <summary>
+    /// 启动时把 hosts 块里已有的「域名 → IP」回填到节点表，
+    /// 否则界面显示「加速已生效」但节点表里 IP 全是空的。
+    /// </summary>
+    private void SyncNodesFromHosts()
+    {
+        Dictionary<string, string> map = Hosts.ParseBlock(Hosts.Read());
+        rows.Clear();
+        foreach (string host in Config.Domains)
+        {
+            string ip;
+            Node node = new Node(host, map.TryGetValue(host, out ip) ? ip : "");
+            if (node.Ip.Length > 0)
+            {
+                node.State = "HOSTS";
+            }
+            rows.Add(node);
         }
     }
 

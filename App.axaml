@@ -11,6 +11,8 @@
   </Application.Resources>
   <Application.Styles>
     <FluentTheme />
+    <!-- DataGrid 的控件主题必须单独引入，否则节点表整块空白（连表头都不显示） -->
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
     <StyleInclude Source="avares://FastGithub/Themes/Fluent.axaml" />
   </Application.Styles>
 </Application>
