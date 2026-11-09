@@ -106,7 +106,7 @@ git check-ignore -v publish\FastGithub.exe obj\project.assets.json
 期望各输出一行规则。然后提交：
 
 ```powershell
-git commit -m "feat: 初始提交，FastGithub 1.2.0"
+git commit -m "feat: 初始提交，FastGithub 1.2.1_Fix"
 ```
 
 ---
@@ -160,17 +160,17 @@ git push -u origin main
 ## 第 8 步 发版（打 tag，CI 自动出 exe）
 
 ```powershell
-git tag -a v1.2.0 -m "FastGithub 1.2.0"
-git push origin v1.2.0
+git tag -a v1.2.1_Fix -m "FastGithub 1.2.1_Fix"
+git push origin v1.2.1_Fix
 ```
 
 仓库里已经带了 `.github/workflows/build.yml`：push 标签后 Actions 会自动在 `windows-latest` 上编译、单文件打包、**自动创建 Release 并挂上 exe**。
 
 首次跑之前先进 **Settings → Actions → General → Workflow permissions**，选 **Read and write permissions** 并保存，否则发布 Release 会 403。
 
-看进度：仓库页 **Actions** → `build`。绿了就回 **Releases** 看有没有 `v1.2.0` 和 `FastGithub.exe`。
+看进度：仓库页 **Actions** → `build`。绿了就回 **Releases** 看有没有 `v1.2.1_Fix` 和 `FastGithub.exe`。
 
-> 也可以手动发：Releases → Draft a new release → 选 `v1.2.0` → 把本地 `publish\FastGithub.exe` 拖进附件 → Publish。
+> 也可以手动发：Releases → Draft a new release → 选 `v1.2.1_Fix` → 把本地 `publish\FastGithub.exe` 拖进附件 → Publish。
 
 ---
 
@@ -193,7 +193,7 @@ git push origin v1.2.0
 git add .
 git commit -m "fix: xxx"
 git push
-git tag -a v1.2.1 -m "FastGithub 1.2.1"; git push origin v1.2.1
+git tag -a v1.2.1_Fix -m "FastGithub 1.2.1_Fix"; git push origin v1.2.1_Fix
 ```
 
 CI 自动出包，不用手动传 exe。
@@ -211,6 +211,6 @@ CI 自动出包，不用手动传 exe。
 - [ ] PAT 勾了 `repo`
 - [ ] `git push` 成功，仓库首页能看到 20+ 个文件
 - [ ] Actions 是绿的
-- [ ] Releases 里有 `v1.2.0` + exe
+- [ ] Releases 里有 `v1.2.1_Fix` + exe
 
 全打勾 = 开源完成，可以发链接给别人了。

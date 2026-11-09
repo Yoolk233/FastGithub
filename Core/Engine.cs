@@ -38,6 +38,8 @@ public static class Engine
             candidates.RemoveAll(ip => ip == "20.205.243.166" || ip == "20.205.243.167");
         }
 
+        string path = Config.ProbePath(host);
+
         List<KeyValuePair<string, long>> reachable = new List<KeyValuePair<string, long>>();
         for (int k = 0; k < candidates.Count; k++)
         {
@@ -53,23 +55,24 @@ public static class Engine
         Node best = null;
         for (int m = 0; m < probeCount; m++)
         {
-            Node node = Net.Verify(host, reachable[m].Key, 4000);
-            if (node.Usable)
+            Node node = Net.Verify(host, reachable[m].Key, path, 4000);
+            // 网页型域名只要不是 200~399 就一律不采用，避免写进 hosts 后整站 404
+            if (node.Acceptable)
             {
                 if (best == null)
                 {
                     best = node;
                 }
-                else if (node.State == "GOOD" && best.State != "GOOD")
+                else if (node.Healthy && !best.Healthy)
                 {
                     best = node;
                 }
-                else if (node.State == best.State && node.Ms < best.Ms)
+                else if (node.Healthy == best.Healthy && node.Ms < best.Ms)
                 {
                     best = node;
                 }
             }
-            if (node.State == "GOOD" && node.Ms < 600)
+            if (node.Healthy && node.Ms < 600)
             {
                 break;
             }
@@ -77,7 +80,11 @@ public static class Engine
 
         if (best == null && reachable.Count > 0)
         {
-            return Net.Verify(host, reachable[0].Key, 5000);
+            Node fallback = Net.Verify(host, reachable[0].Key, path, 5000);
+            if (fallback.Acceptable)
+            {
+                return fallback;
+            }
         }
         if (best == null)
         {
@@ -135,15 +142,20 @@ public static class Engine
         for (int i = 0; i < Config.Domains.Length; i++)
         {
             string host = Config.Domains[i];
-            if (nodes.ContainsKey(host) && nodes[host].Usable)
+            if (!nodes.ContainsKey(host))
             {
-                map[host] = nodes[host].Ip;
+                continue;
+            }
+            Node node = nodes[host];
+            if (node.Acceptable && node.Ip != null && node.Ip.Length > 0)
+            {
+                map[host] = node.Ip;
                 ok++;
             }
         }
         if (ok == 0)
         {
-            log?.AppendLine("没有任何域名探测成功，未修改 hosts");
+            log?.AppendLine("没有任何域名复验通过（网页型域名必须是 200~399），未修改 hosts");
             return false;
         }
 
@@ -167,6 +179,93 @@ public static class Engine
         log?.AppendLine("已写入 " + ok + " 个域名，DNS 缓存已刷新");
         SaveCache(map);
         return true;
+    }
+
+    /// <summary>直接按 host→ip 映射重写 hosts（巡检换节点时用）</summary>
+    public static bool ApplyMap(Dictionary<string, string> map, StringBuilder log)
+    {
+        if (map.Count == 0)
+        {
+            return false;
+        }
+        string text = Hosts.Read();
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+        string clean = Hosts.StripBlock(text);
+        List<string> found = Hosts.FindConflicts(clean);
+        if (found.Count > 0)
+        {
+            clean = Hosts.CommentConflicts(clean);
+        }
+        if (!Hosts.Write(clean.TrimEnd('\r', '\n') + "\r\n\r\n" + Hosts.BuildBlock(map)))
+        {
+            return false;
+        }
+        Dns.Flush();
+        SaveCache(map);
+        log?.AppendLine("已重写 hosts，接管 " + map.Count + " 个域名");
+        return true;
+    }
+
+    /// <summary>
+    /// 巡检当前已写入的节点是否还能用。返回失效的域名列表（空 = 一切正常）。
+    /// 只查 CoreDomains 这 5 个：github.com 打不开最先能感觉到的就是它们。
+    /// </summary>
+    public static List<string> HealthCheck(Dictionary<string, string> applied)
+    {
+        List<string> bad = new List<string>();
+        for (int i = 0; i < Config.CoreDomains.Length; i++)
+        {
+            string host = Config.CoreDomains[i];
+            if (!applied.ContainsKey(host))
+            {
+                // 核心域名压根没写进 hosts，界面却显示"已加速"，同样是假状态
+                bad.Add(host);
+                continue;
+            }
+            string ip = applied[host];
+            if (string.IsNullOrEmpty(ip))
+            {
+                bad.Add(host);
+                continue;
+            }
+            Node node = Net.Verify(host, ip, Config.ProbePath(host), 3000);
+            if (!node.Acceptable)
+            {
+                bad.Add(host);
+            }
+        }
+        return bad;
+    }
+
+    /// <summary>
+    /// 给失效域名重新择优并重写 hosts。返回成功换掉的个数。
+    /// </summary>
+    public static int Repair(Dictionary<string, string> applied, List<string> broken, StringBuilder log)
+    {
+        int fixedCount = 0;
+        for (int i = 0; i < broken.Count; i++)
+        {
+            string host = broken[i];
+            Node node = ResolveOne(host);
+            if (node.Acceptable && !string.IsNullOrEmpty(node.Ip))
+            {
+                applied[host] = node.Ip;
+                fixedCount++;
+                log?.AppendLine("「" + host + "」节点失效，已自动切换到 " + node.Ip + "（" + node.Ms + " ms）");
+            }
+            else
+            {
+                log?.AppendLine("「" + host + "」节点失效，暂时没有可用替代，下次巡检继续尝试");
+            }
+        }
+        if (fixedCount > 0)
+        {
+            ApplyMap(applied, log);
+        }
+        return fixedCount;
     }
 
     /// <summary>还原：删加速块 + 去掉 "#FG# " 前缀</summary>

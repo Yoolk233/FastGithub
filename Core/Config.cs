@@ -3,7 +3,9 @@ namespace FastGithub;
 public static class Config
 {
     public const string AppName = "FastGithub";
-    public const string Version = "1.2.0";
+
+    /// <summary>显示用版本号</summary>
+    public const string Version = "1.2.1_Fix";
 
     /// <summary>hosts 加速块的起始标记</summary>
     public const string MarkBegin = "# ==== FastGithub BEGIN (auto generated) ====";
@@ -57,6 +59,32 @@ public static class Config
         "pages.github.com",
         "education.github.com",
         "uploads.github.com"
+    };
+
+    /// <summary>
+    /// 网页型域名：hosts 里写错一个 IP，浏览器就是整站 404 / 打不开。
+    /// 这些域名必须复验出 200~399 才能写入，只“能连上”不算数。
+    /// </summary>
+    public static bool IsStrict(string host)
+    {
+        return host == "github.com"
+            || host == "api.github.com"
+            || host == "gist.github.com"
+            || host == "github.io";
+    }
+
+    /// <summary>复验用的路径：github.com 用 /login（真实页面），其余用根路径</summary>
+    public static string ProbePath(string host)
+        => host == "github.com" ? "/login" : "/";
+
+    /// <summary>巡检只看这几个核心域名，保证 45 秒一轮不会太慢</summary>
+    public static readonly string[] CoreDomains =
+    {
+        "github.com",
+        "api.github.com",
+        "codeload.github.com",
+        "raw.githubusercontent.com",
+        "github.githubassets.com"
     };
 
     /// <summary>每个域名的候选 IP 池（会再和 DoH 解析结果合并）</summary>

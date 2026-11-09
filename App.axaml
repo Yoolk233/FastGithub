@@ -2,8 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="FastGithub.App"
              RequestedThemeVariant="Light">
+  <Application.Resources>
+    <!-- 强调色：设置页「显示 → 调色」会在运行时替换这组画刷 -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#FF0F6CBD" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#FF115EA3" />
+    <SolidColorBrush x:Key="AccentPressBrush" Color="#FF0C3B70" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#FFD6E7F7" />
+  </Application.Resources>
   <Application.Styles>
     <FluentTheme />
-    <StyleInclude Source="avares://FastGithub/Themes/Fluent.xaml" />
+    <StyleInclude Source="avares://FastGithub/Themes/Fluent.axaml" />
   </Application.Styles>
 </Application>

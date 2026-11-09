@@ -54,6 +54,11 @@ internal static class Program
                 CliRestore();
                 return;
             }
+            if (args[0] == "--health")
+            {
+                CliHealth(args);
+                return;
+            }
         }
 
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
@@ -78,7 +83,7 @@ internal static class Program
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine("FastGithub 1.2.0 selftest");
+        sb.AppendLine("FastGithub " + Config.Version + " selftest");
         sb.AppendLine("--- hosts 状态 ---");
         string hosts = Hosts.Read();
         sb.AppendLine("hasBlock=" + Hosts.HasBlock(hosts));
@@ -128,5 +133,36 @@ internal static class Program
         sb.AppendLine("FastGithub CLI restore " + DateTime.Now.ToString("HH:mm:ss"));
         sb.AppendLine("result=" + Engine.Restore(sb));
         File.WriteAllText(Path.Combine(Path.GetTempPath(), "fastgithub_cli.txt"), sb.ToString(), new UTF8Encoding(false));
+    }
+
+    /// <summary>
+    /// --health [--repair]：按当前 hosts 块巡检核心域名，可选自动换节点。
+    /// 用来在没有界面的情况下验证"显示已加速但其实已断连"的修复是否生效。
+    /// </summary>
+    private static void CliHealth(string[] args)
+    {
+        bool repair = false;
+        for (int i = 1; i < args.Length; i++)
+        {
+            if (args[i] == "--repair")
+            {
+                repair = true;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("FastGithub CLI health " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        Dictionary<string, string> map = Hosts.ParseBlock(Hosts.Read());
+        sb.AppendLine("hosts 块内域名数=" + map.Count);
+        List<string> bad = Engine.HealthCheck(map);
+        sb.AppendLine("失效域名=" + (bad.Count == 0 ? "无" : string.Join(",", bad.ToArray())));
+        if (repair && bad.Count > 0)
+        {
+            StringBuilder log = new StringBuilder();
+            int fixedCount = Engine.Repair(map, bad, log);
+            sb.AppendLine("自动换节点成功数=" + fixedCount);
+            sb.AppendLine(log.ToString());
+        }
+        File.WriteAllText(Path.Combine(Path.GetTempPath(), "fastgithub_health.txt"), sb.ToString(), new UTF8Encoding(false));
     }
 }

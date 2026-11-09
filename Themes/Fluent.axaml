@@ -1,0 +1,71 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- 主按钮样式：Button Classes="accent"（颜色跟随设置页的强调色） -->
+  <Style Selector="Button.accent">
+    <Setter Property="Foreground" Value="#FFFFFFFF" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+
+  <Style Selector="Button.accent /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+
+  <Style Selector="Button.accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+  </Style>
+
+  <Style Selector="Button.accent:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentPressBrush}" />
+  </Style>
+
+  <Style Selector="Button.accent:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+  </Style>
+
+  <!-- 侧边栏导航按钮 -->
+  <Style Selector="Button.nav">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Button.nav /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="CornerRadius" Value="8" />
+  </Style>
+
+  <Style Selector="Button.nav:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#FFECECEC" />
+  </Style>
+
+  <Style Selector="Button.nav.active /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#FFE3E3E3" />
+  </Style>
+
+  <!-- 调色板小方块 -->
+  <Style Selector="Button.swatch">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+
+  <Style Selector="Button.swatch /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+
+  <!-- DataGrid 紧凑外观 -->
+  <Style Selector="DataGrid">
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="FontWeight" Value="DemiBold" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+</Styles>

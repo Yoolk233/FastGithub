@@ -106,13 +106,19 @@ public static class Net
         }
     }
 
-    /// <summary>TLS + HTTP 复验，整体 9 秒兜底超时</summary>
-    public static Node Verify(string host, string ip, int tcpTimeoutMs)
+    /// <summary>用默认复验路径做 TLS + HTTP 复验</summary>
+    public static Node Verify(string host, string ip, int timeoutMs)
+    {
+        return Verify(host, ip, Config.ProbePath(host), timeoutMs);
+    }
+
+    /// <summary>TLS + HTTP 复验（指定路径），整体 9 秒兜底超时</summary>
+    public static Node Verify(string host, string ip, string path, int timeoutMs)
     {
         Node[] box = new Node[1];
         if (!Task.Factory.StartNew(delegate
         {
-            box[0] = VerifyInner(host, ip, tcpTimeoutMs);
+            box[0] = VerifyInner(host, ip, path, timeoutMs);
         }).Wait(9000))
         {
             return new Node(host, ip)
@@ -131,7 +137,7 @@ public static class Net
         return box[0];
     }
 
-    private static Node VerifyInner(string host, string ip, int tcpTimeoutMs)
+    private static Node VerifyInner(string host, string ip, string path, int tcpTimeoutMs)
     {
         Node node = new Node(host, ip);
         Stopwatch sw = Stopwatch.StartNew();
@@ -154,10 +160,14 @@ public static class Net
             client.ReceiveTimeout = 8000;
             client.SendTimeout = 8000;
             ssl = new SslStream(client.GetStream(), false);
-            ssl.AuthenticateAsClient(host, null, SslProtocols.Tls12, false);
+            ssl.AuthenticateAsClient(host, null, SslProtocols.Tls12 | SslProtocols.Tls13, false);
 
+            if (path.Length == 0)
+            {
+                path = "/";
+            }
             string request =
-                "GET / HTTP/1.1\r\n" +
+                "GET " + path + " HTTP/1.1\r\n" +
                 "Host: " + host + "\r\n" +
                 "User-Agent: " + Config.UA + "\r\n" +
                 "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" +
@@ -242,7 +252,7 @@ public static class Net
             }
             client.EndConnect(ar);
             ssl = new SslStream(client.GetStream(), false);
-            ssl.AuthenticateAsClient(host, null, SslProtocols.Tls12, false);
+            ssl.AuthenticateAsClient(host, null, SslProtocols.Tls12 | SslProtocols.Tls13, false);
 
             string request = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nUser-Agent: FastGithub\r\nConnection: close\r\n\r\n";
             byte[] bytes = Encoding.ASCII.GetBytes(request);
