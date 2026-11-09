@@ -26,11 +26,11 @@
 
         <TextBox Grid.Row="0" Grid.Column="1" Name="PrefixBox"
                  Height="34" FontSize="13" HorizontalAlignment="Stretch"
-                 Text="https://ghfast.top/" />
+                 Watermark="https://你的镜像前缀/" />
 
         <ComboBox Grid.Row="1" Grid.Column="1" Name="PresetBox"
                   Height="32" FontSize="12" Margin="0,8,0,0"
-                  PlaceholderText="从预设里选一个…" HorizontalAlignment="Stretch" />
+                  PlaceholderText="无内置预设，直接填上面的输入框" HorizontalAlignment="Stretch" />
 
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
           <Button Name="TestBtn" Content="测速" Height="32" FontSize="13" />
@@ -40,7 +40,7 @@
         </StackPanel>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Name="TipText"
-                   Text="当前默认：https://ghfast.top/"
+                   Text="1.2.2 起不内置任何第三方镜像；留空＝不使用镜像"
                    FontSize="12" Foreground="#FF8A8A8A" Margin="0,8,0,0" />
       </Grid>
     </Border>

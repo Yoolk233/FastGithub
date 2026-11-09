@@ -106,6 +106,8 @@ public partial class MainWindow : Window
     {
         Log("FastGithub " + Config.Version + " 已启动：网页走 hosts 直连，下载走镜像加速。");
         Log("已启用节点巡检：每 45 秒复验一次，节点失效自动换 IP。");
+        Log("作用范围：只接管 " + Config.Domains.Length + " 个 GitHub 域名，不修改其它网站的解析、不改系统 DNS、不设系统代理。");
+        ReportThirdParty();
         if (!Hosts.HasBlock(Hosts.Read()))
         {
             int count = 0;
@@ -119,6 +121,33 @@ public partial class MainWindow : Window
         if (Engine.LoadCache().Count > 0 || Hosts.HasBlock(Hosts.Read()))
         {
             StartWatchdog();
+        }
+    }
+
+    /// <summary>
+    /// 启动时把"别的软件在动网络"这件事讲清楚：
+    /// 一是 hosts 里被写成本机回环的条目，二是系统代理。
+    /// 这两类都会让用户以为"开了 FastGithub 之后别的网站就坏了"。
+    /// </summary>
+    private void ReportThirdParty()
+    {
+        try
+        {
+            System.Collections.Generic.List<string> loop = Hosts.FindLocalProxy(Hosts.Read());
+            if (loop.Count > 0)
+            {
+                string sample = string.Join("、", loop.GetRange(0, Math.Min(3, loop.Count)).ToArray());
+                Log("检测到 hosts 里有 " + loop.Count + " 条把域名指向本机代理（127.0.0.1）的记录，例如 " + sample
+                    + "。这是其它加速器留下的，它的代理一退出，这些域名就整体打不开，与本工具无关。");
+            }
+            string proxy = SystemProxy.Describe();
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                Log("检测到系统代理：" + proxy + "。若该代理由别的加速器设置且没有随程序退出而还原，所有网站都会异常、甚至被跳转到广告页，请检查来源。");
+            }
+        }
+        catch
+        {
         }
     }
 
@@ -177,7 +206,8 @@ public partial class MainWindow : Window
         StringBuilder sb = new StringBuilder();
         int ok = 0;
         int conflicts = 0;
-        bool result = Engine.Apply(map, out ok, out conflicts, sb);
+        int broken = 0;
+        bool result = Engine.Apply(map, out ok, out conflicts, out broken, sb);
         foreach (string line in sb.ToString().Split('\n'))
         {
             if (line.Trim().Length > 0)
@@ -190,9 +220,18 @@ public partial class MainWindow : Window
         RefreshState();
         if (result)
         {
-            degraded = false;
-            Log("加速已生效，接管 " + ok + " 个域名。浏览器可直接打开 github.com");
-            StartWatchdog();
+            degraded = broken > 0;
+            if (broken > 0)
+            {
+                Log("加速已写入，但复验不放行 " + broken + " 个核心域名：界面已标为「加速已失效」，45 秒后自动重试换节点。");
+                RefreshState();
+                StartWatchdog();
+            }
+            else
+            {
+                Log("加速已生效，接管 " + ok + " 个域名。浏览器可直接打开 github.com");
+                StartWatchdog();
+            }
         }
         else
         {

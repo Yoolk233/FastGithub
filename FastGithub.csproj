@@ -7,9 +7,9 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AssemblyName>FastGithub</AssemblyName>
     <RootNamespace>FastGithub</RootNamespace>
-    <Version>1.2.1.2</Version>
-    <FileVersion>1.2.1.2</FileVersion>
-    <InformationalVersion>1.2.1Fix2</InformationalVersion>
+    <Version>1.2.2.0</Version>
+    <FileVersion>1.2.2.0</FileVersion>
+    <InformationalVersion>1.2.2Criticalissuefix</InformationalVersion>
     <Product>FastGithub</Product>
     <Company>FastGithub</Company>
     <Description>GitHub 网页直连与下载加速工具（hosts 优选 + 镜像前缀）</Description>

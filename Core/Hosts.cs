@@ -142,6 +142,47 @@ public static class Hosts
         return found;
     }
 
+    /// <summary>
+    /// 找出 hosts 里被别的加速器改成本机回环的域名（127.0.0.1 / ::1 / localhost）。
+    /// 这类条目是 Watt Toolkit、机场客户端之类"本地代理"留下的：那个软件一退出，
+    /// 对应域名就整体打不开，用户却会以为是本工具的问题，所以要显式提示。
+    /// </summary>
+    public static List<string> FindLocalProxy(string text)
+    {
+        List<string> found = new List<string>();
+        string[] lines = text.Replace("\r\n", "\n").Split('\n');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i].Trim();
+            if (line.Length == 0 || line.StartsWith("#"))
+            {
+                continue;
+            }
+            string[] parts = Regex.Split(line, "\\s+");
+            if (parts.Length < 2)
+            {
+                continue;
+            }
+            string address = parts[0].Trim();
+            bool loopback = address == "127.0.0.1" || address == "::1" || address == "0.0.0.0"
+                            || string.Equals(address, "localhost", StringComparison.OrdinalIgnoreCase);
+            if (!loopback)
+            {
+                continue;
+            }
+            for (int j = 1; j < parts.Length; j++)
+            {
+                string host = parts[j].Trim().ToLowerInvariant();
+                if (host.Length == 0 || found.Contains(host))
+                {
+                    continue;
+                }
+                found.Add(host);
+            }
+        }
+        return found;
+    }
+
     /// <summary>把冲突行整体注释成 "#FG# ..."，还原时去掉前缀</summary>
     public static string CommentConflicts(string text)
     {

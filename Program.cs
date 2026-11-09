@@ -113,8 +113,9 @@ internal static class Program
         Dictionary<string, Node> map = Engine.ProbeAll(4, null);
         int ok = 0;
         int conflicts = 0;
-        bool result = Engine.Apply(map, out ok, out conflicts, sb);
-        sb.AppendLine("result=" + result + "  ok=" + ok + "  conflicts=" + conflicts);
+        int broken = 0;
+        bool result = Engine.Apply(map, out ok, out conflicts, out broken, sb);
+        sb.AppendLine("result=" + result + "  ok=" + ok + "  conflicts=" + conflicts + "  broken=" + broken);
         for (int i = 0; i < Config.Domains.Length; i++)
         {
             string host = Config.Domains[i];

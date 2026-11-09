@@ -41,7 +41,8 @@ public static class MirrorStore
         catch
         {
         }
-        return "https://ghfast.top/";
+        // 1.2.2 起不再内置任何第三方镜像域名：留空＝不使用镜像
+        return Config.Mirror;
     }
 
     public static void Save(string prefix)
@@ -60,7 +61,8 @@ public static class MirrorStore
         string text = prefix == null ? "" : prefix.Trim();
         if (text.Length == 0)
         {
-            return "https://ghfast.top/";
+            // 空前缀＝不使用镜像，把原始 GitHub 链接原样给用户
+            return "";
         }
         if (!text.EndsWith("/"))
         {
@@ -86,6 +88,11 @@ public static class MirrorStore
                 text = text.Substring(presets[i].Length);
                 break;
             }
+        }
+        if (normalized.Length == 0)
+        {
+            // 没配镜像：直接返回原始链接，绝不套任何第三方域名
+            return text;
         }
         return normalized + text;
     }

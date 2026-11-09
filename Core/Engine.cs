@@ -127,10 +127,11 @@ public static class Engine
     }
 
     /// <summary>写 hosts 并缓存；可选的 log 用于把过程回显到界面</summary>
-    public static bool Apply(Dictionary<string, Node> nodes, out int ok, out int conflicts, StringBuilder log)
+    public static bool Apply(Dictionary<string, Node> nodes, out int ok, out int conflicts, out int broken, StringBuilder log)
     {
         ok = 0;
         conflicts = 0;
+        broken = 0;
         string text = Hosts.Read();
         if (string.IsNullOrEmpty(text))
         {
@@ -178,6 +179,15 @@ public static class Engine
         Dns.Flush();
         log?.AppendLine("已写入 " + ok + " 个域名，DNS 缓存已刷新");
         SaveCache(map);
+
+        // 清完 DNS 缓存立刻复验一次：这一步能区分"我们的节点不行"和"本机上游 DNS 被劫持"。
+        List<string> bad = HealthCheck(map);
+        broken = bad.Count;
+        if (bad.Count > 0)
+        {
+            log?.AppendLine("写入后复验：以下 " + bad.Count + " 个域名当前不可用 —— " + string.Join("、", bad.ToArray()));
+            log?.AppendLine("刚清过 DNS 缓存仍打不开，多半是本机上游 DNS 被劫持或线路抖动。请检查路由器/宽带 DNS；其它网站若也异常，先点「停止并还原」对比。");
+        }
         return true;
     }
 

@@ -5,7 +5,7 @@ public static class Config
     public const string AppName = "FastGithub";
 
     /// <summary>显示用版本号</summary>
-    public const string Version = "1.2.1Fix2";
+    public const string Version = "1.2.2Criticalissuefix";
 
     /// <summary>hosts 加速块的起始标记</summary>
     public const string MarkBegin = "# ==== FastGithub BEGIN (auto generated) ====";
@@ -18,22 +18,25 @@ public static class Config
 
     public const string HostsPath = @"C:\Windows\System32\drivers\etc\hosts";
 
-    public const string Mirror = "https://ghfast.top/";
+    /// <summary>
+    /// 默认镜像前缀。
+    /// 内置的第三方 ghproxy 域名在 1.2.2 已全部移除：实测 ghfast.top / ghproxy.net /
+    /// gh-proxy.com / mirror.ghproxy.com / gh.llkk.cc 全部超时或 502，ghp.ci 域名直接解析失败。
+    /// 这类死链在浏览器里点开就是广告页甚至博彩跳转页，不能再随程序分发。
+    /// 现在只由用户自己填写自己的镜像前缀，留空＝不使用镜像。
+    /// </summary>
+    public const string Mirror = "";
 
     public const string UA =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
         "Chrome/131.0.0.0 Safari/537.36";
 
-    /// <summary>下载加速的预设镜像前缀</summary>
-    public static readonly string[] MirrorPresets =
-    {
-        "https://ghfast.top/",
-        "https://ghproxy.net/",
-        "https://gh-proxy.com/",
-        "https://mirror.ghproxy.com/",
-        "https://gh.llkk.cc/",
-        "https://ghp.ci/"
-    };
+    /// <summary>
+    /// 下载加速的预设镜像前缀：故意留空。
+    /// 见上面 Mirror 的说明——内置第三方镜像域名会把用户带到不干净的站点，
+    /// 需要镜像请用户自己填一个可信前缀（程序会先测速再允许使用）。
+    /// </summary>
+    public static readonly string[] MirrorPresets = new string[0];
 
     /// <summary>接管的 GitHub 域名</summary>
     public static readonly string[] Domains =

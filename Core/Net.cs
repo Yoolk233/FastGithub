@@ -193,6 +193,12 @@ public static class Net
             {
                 node.State = "BAD";
             }
+            // github.com 是网页型域名：只看状态码不够。
+            // 证书合法但内容不是 GitHub（中间人替换 / 劫持页也返回 200）时，绝不能写进 hosts。
+            if (node.State == "GOOD" && host == "github.com" && !LooksLikeGithubPage(reader))
+            {
+                node.State = "BAD";
+            }
             return node;
         }
         catch
@@ -234,6 +240,52 @@ public static class Net
                 {
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// 读一小段响应体，判断这确实是 GitHub 的页面（而不是返回 200 的劫持页 / 博彩页）。
+    /// 先跳过响应头，避免被 "x-github-request-id" 这类头字段骗过去。
+    /// </summary>
+    private static bool LooksLikeGithubPage(StreamReader reader)
+    {
+        try
+        {
+            // 跳过响应头
+            for (int i = 0; i < 200; i++)
+            {
+                string header = reader.ReadLine();
+                if (header == null)
+                {
+                    return false;
+                }
+                if (header.Length == 0)
+                {
+                    break;
+                }
+            }
+
+            StringBuilder body = new StringBuilder();
+            for (int i = 0; i < 300 && body.Length < 8000; i++)
+            {
+                string line = reader.ReadLine();
+                if (line == null)
+                {
+                    break;
+                }
+                body.Append(line).Append('\n');
+            }
+
+            if (body.Length == 0)
+            {
+                return false;
+            }
+            string lower = body.ToString().ToLowerInvariant();
+            return lower.Contains("github") || lower.Contains("octocat");
+        }
+        catch
+        {
+            return false;
         }
     }
 

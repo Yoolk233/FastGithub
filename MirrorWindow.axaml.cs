@@ -55,7 +55,7 @@ public partial class MirrorWindow : Window
 
         string current = MirrorStore.Load();
         prefixBox.Text = current;
-        tipText.Text = "当前默认：" + current;
+        tipText.Text = current.Length == 0 ? "当前默认：不使用镜像（留空）" : "当前默认：" + current;
         for (int i = 0; i < presets.Count; i++)
         {
             if (string.Equals(presets[i], current, StringComparison.OrdinalIgnoreCase))
@@ -127,7 +127,7 @@ public partial class MirrorWindow : Window
     {
         string prefix = Prefix();
         MirrorStore.Save(prefix);
-        tipText.Text = "当前默认：" + prefix;
+        tipText.Text = prefix.Length == 0 ? "当前默认：不使用镜像（留空）" : "当前默认：" + prefix;
         testText.Text = "已设为默认";
         testText.Foreground = new SolidColorBrush(Color.Parse("#0F7B0F"));
     }
