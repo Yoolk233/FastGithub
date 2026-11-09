@@ -1,5 +1,7 @@
 # FastGithub
 
+![FastGithub 主界面](docs/screenshot.png)
+
 一个 Windows 桌面小工具，解决国内访问 GitHub 时 **网页打不开/加载慢** 和 **Release、raw、archive 下载龟速** 两个问题。
 
 - 网页访问：测速 GitHub 相关域名，挑出当前可用的 IP，写进系统 `hosts`，浏览器直连 `github.com`
